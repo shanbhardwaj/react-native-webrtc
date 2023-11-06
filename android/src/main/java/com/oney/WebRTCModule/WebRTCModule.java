@@ -1356,4 +1356,24 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
     public void removeListeners(Integer count) {
         // Keep: Required for RN built in Event Emitter Calls.
     }
+       
+    @ReactMethod
+    public void peerConnectionSendDTMF(String tone, int id) {
+        ThreadUtils.runOnExecutor(() ->
+        peerConnectionSendDTMFAsync(tone, id));
+    }
+
+    private void peerConnectionSendDTMFAsync(String tone, int id) {
+        PeerConnection peerConnection = getPeerConnection(id);
+
+        if (peerConnection != null) {
+
+            RtpSender sender = peerConnection.getSenders().get(0);
+            sender.dtmf().insertDtmf(tone, 100, 500);
+
+        } else {
+            Log.d(TAG, "peerConnectionSendDTMF() peerConnection is null");
+        }
+    }
+
 }
